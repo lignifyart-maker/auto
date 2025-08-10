@@ -1,0 +1,41 @@
+---
+import { getCollection } from 'astro:content';
+const posts = (await getCollection('posts'))
+  .sort((a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime());
+const grouped = posts.reduce((acc, p) => {
+  const cat = p.data.category || 'uncategorized';
+  acc[cat] ||= [];
+  acc[cat].push(p);
+  return acc;
+}, /** @type{Record<string, typeof posts>} */({}));
+---
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>我的自動日誌</title>
+    <meta name="description" content="把 TXT 自動轉為日誌的網站" />
+  </head>
+  <body style="font-family: system-ui, -apple-system, 'Noto Sans TC', Segoe UI, Roboto, 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif; max-width: 860px; margin: 0 auto; padding: 24px;">
+    <header style="margin-bottom: 24px;">
+      <h1 style="margin: 0;">我的自動日誌</h1>
+      <p style="color: #666;">把 <code>TXT</code> 檔放進 <code>inbox/</code>，其餘全自動</p>
+      <hr style="margin: 16px 0 0; border: none; border-top: 1px solid #eee;" />
+    </header>
+
+    {Object.keys(grouped).sort().map(cat => (
+      <section style="margin: 28px 0;">
+        <h2 style="margin: 0 0 8px;">{cat}</h2>
+        <ul style="list-style: none; padding: 0; margin: 0;">
+          {grouped[cat].map(p => (
+            <li style="margin: 10px 0;">
+              <a href={`/posts/${p.slug}`} style="text-decoration: none; font-weight: 600;">{p.data.title}</a>
+              <span style="color:#777; margin-left: 8px;">{p.data.date}</span>
+              {p.data.tags?.length ? <span style="color:#999; margin-left: 8px;">#{p.data.tags.join(' #')}</span> : null}
+            </li>
+          ))}
+        </ul>
+      </section>
+    ))}
+  </body>
+</html>

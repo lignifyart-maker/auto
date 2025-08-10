@@ -1,0 +1,25 @@
+---
+const { frontmatter } = Astro.props;
+---
+<html lang="zh-Hant">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{frontmatter.title}｜我的自動日誌</title>
+  </head>
+  <body style="font-family: system-ui, -apple-system, 'Noto Sans TC', Segoe UI, Roboto, 'Helvetica Neue', Arial, 'PingFang TC', 'Microsoft JhengHei', sans-serif; max-width: 720px; margin: 0 auto; padding: 24px;">
+    <header style="margin-bottom: 24px;">
+      <a href="/" style="text-decoration: none;">← 回首頁</a>
+      <h1 style="margin: 8px 0 0;">{frontmatter.title}</h1>
+      <p style="color: #666; margin: 4px 0 0;">{frontmatter.date} · {frontmatter.category}</p>
+      {frontmatter.tags?.length ? <p style="margin: 8px 0 0;"># {frontmatter.tags.join('  # ')}</p> : null}
+      <hr style="margin: 16px 0 0; border: none; border-top: 1px solid #eee;" />
+    </header>
+    <main style="line-height: 1.85;">
+      <slot />
+    </main>
+    <footer style="margin-top: 48px; color:#888; font-size: 14px;">
+      由 Astro 自動生成 · 內容來自 TXT
+    </footer>
+  </body>
+</html>
